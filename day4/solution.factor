@@ -46,7 +46,7 @@ IN: AOC2024-day4-vocab
 
 : xmas? ( loc map -- bool ) [ -rot apply-seq get-seq ] curry curry [ diag1 ] [ diag2 ] bi [ swap map [ "MAS" >array = ] any? ] 2bi@ and ;
 
-: part2 ( input -- sol ) dup get-dim gen-index-map swap [ xmas? ] curry filter length ;
+: part2 ( input -- sol ) dup get-dim gen-index-map swap [ xmas? ] curry count ;
 
 ! ---------- "Main" ----------
 get-input part1 .
