@@ -34,6 +34,11 @@ DEFER: has-solution-part1?
 : has-solution? ( ops target nums -- bool ) clone swap [ [ 1 tail ] [ first ] bi ] [ ] bi* has-solution-part1? ;
 
 : optimized ( ops inp -- sol ) parse-file swap [ swap first2 3array ] curry map [ first3 has-solution? ] filter [ second ] map sum ;
+
+! ---------- Optimized2 ------------
+: check-division ( target val -- res ) / dup integer? [ ] [ drop f ] if ;
+: check-concat ( target val -- res ) [ number>string ] bi@
+: rev-operation ( target val op -- res ) dup 0 = [ drop - ] [ 1 = [ check-division ] [ ] if ] if ;
 ! ---------- "Main" ----------
 
 { 0 1 } input-file optimized .
