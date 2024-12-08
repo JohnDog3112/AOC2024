@@ -22,6 +22,19 @@ IN: AOC2024-day6-vocab
 
 : part2 ( inp -- sol ) parse-file [ first2 calculate-possibilities2 swap [ = ] curry filter ] map [ length 0 > ] filter [ first ] map sum ;
 
+
+! ---------- Optimized -----------
+: run-operation ( a b op -- res ) dup 0 = [ drop + ] [ 1 = [ * ] [ swap concat ] if ] if ;
+
+
+DEFER: has-solution-part1?
+
+: has-solution-part2? ( ops target nums acc op -- bool ) [ clone [ 1 tail ] [ first ] bi ] [ ] dup tri* run-operation rot has-solution-part1? ; recursive
+: has-solution-part1? ( ops nums acc target -- bool ) 2dup > [ 4drop f ] [ 3dup = swap length 0 = [ 4nip ] [ drop -rot 3array dupd [ rot [ first3 ] [ ] bi* has-solution-part2? ] curry curry any? ] if ] if ; recursive
+: has-solution? ( ops target nums -- bool ) clone swap [ [ 1 tail ] [ first ] bi ] [ ] bi* has-solution-part1? ;
+
+: optimized ( ops inp -- sol ) parse-file swap [ swap first2 3array ] curry map [ first3 has-solution? ] filter [ second ] map sum ;
 ! ---------- "Main" ----------
-input-file part1 .
-input-file part2 .
+
+{ 0 1 } input-file optimized .
+{ 0 1 2 } input-file optimized .
