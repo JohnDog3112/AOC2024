@@ -11,3 +11,4 @@ Day5: Factor
 Day6: Factor (suffering)
 Day7: Factor
 Day8: Factor
+Day9: Rust (I was tired from studying and implemented the easiest Rust solution I could think of)

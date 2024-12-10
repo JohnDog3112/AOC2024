@@ -9,6 +9,8 @@ pkgs.stdenv.mkDerivation rec {
     name = "factor";
     buildInputs = with pkgs; [
       factor-lang
+			rustc
+			cargo
 	];
 	shellHook = ''
 		alias factor="${pkgs.factor-lang}/bin/factor"
