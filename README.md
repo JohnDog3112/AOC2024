@@ -14,3 +14,4 @@ Current plan is to do it in Factor, Haskell, and Rust, but it might change later
 * Day9: Rust (I was tired from studying and implemented the easiest Rust solution I could think of)
 * Day10: Rust (finals still)
 * Day11: Factor (back to Factor)
+* Day12: Factor (pain)
