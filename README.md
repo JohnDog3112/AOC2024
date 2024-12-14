@@ -15,3 +15,4 @@ Current plan is to do it in Factor, Haskell, and Rust, but it might change later
 * Day10: Rust (finals still)
 * Day11: Factor (back to Factor)
 * Day12: Factor (pain)
+* Day13: Factor part1, Rust part2 (didn't want to do another grid search algo on Factor)
