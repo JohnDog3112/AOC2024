@@ -137,49 +137,26 @@ fn search_up(
     };
 
 
-    match last_tile {
-        Some(last_tile) => {
-            search_up(
-                (check_pos.0, check_pos.1 + y_dir),
-                Some(tile),
-                y_dir,
-                map,
-                sections,
-                visited
-            )?;
+    search_up(
+        (check_pos.0, check_pos.1 + y_dir),
+        Some(tile),
+        y_dir,
+        map,
+        sections,
+        visited
+    )?;
 
-            if last_tile != tile {
-                // println!("{check_pos:?}, {other_x}");
-                search_up(
-                    (other_x, check_pos.1),
-                    Some(other_tile),
-                    y_dir,
-                    map,
-                    sections,
-                    visited
-                )?;
-            } 
-        },
-        None => {
-            search_up(
-                (check_pos.0, check_pos.1 + y_dir),
-                Some(tile),
-                y_dir,
-                map,
-                sections,
-                visited
-            )?;
-
-            search_up(
-                (other_x, check_pos.1),
-                Some(other_tile),
-                y_dir,
-                map,
-                sections,
-                visited
-            )?;
-        }
-    }
+    if last_tile.unwrap_or(other_tile) != tile {
+        // println!("{check_pos:?}, {other_x}");
+        search_up(
+            (other_x, check_pos.1),
+            Some(other_tile),
+            y_dir,
+            map,
+            sections,
+            visited
+        )?;
+    } 
 
 
 
