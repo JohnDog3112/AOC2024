@@ -18,3 +18,4 @@ Current plan is to do it in Factor, Haskell, and Rust, but it might change later
 * Day13: Factor
 * Day14: Factor part1, Rust part2 (didn't want to do another grid search algo on Factor)
 * Day15: Rust, probably sticking with Rust for the rest
+* Day16: Rust
