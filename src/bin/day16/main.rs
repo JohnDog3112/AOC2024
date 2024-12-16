@@ -33,21 +33,12 @@ impl Direction {
             Self::WEST => Self::NORTH
         }
     }
-    fn flip(self) -> Self {
-        match self {
-            Self::NORTH => Self::SOUTH,
-            Self::SOUTH => Self::NORTH,
-            Self::EAST => Self::WEST,
-            Self::WEST => Self::EAST,
-        }
-    }
 
-    fn get_costs(self, cost: i32) -> [(Self, i32); 4] {
+    fn get_costs(self, cost: i32) -> [(Self, i32); 3] {
         [
             (self, cost+1),
             (self.turn_left(), cost+1001),
             (self.turn_right(), cost+1001),
-            (self.flip(), cost+2001)
         ]
     }
 }
