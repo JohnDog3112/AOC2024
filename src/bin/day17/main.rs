@@ -150,14 +150,7 @@ enum APart {
     Lit(u8),
     Range(usize, usize)
 }
-impl APart {
-    fn get_len(self) -> usize {
-        match self {
-            APart::A(_)|APart::Not(_)|APart::Lit(_) => 1,
-            APart::Range(start, end) => end-start+1
-        }
-    }
-}
+
 #[derive(Clone, Debug)]
 enum Values {
     Literal(u128),
@@ -466,7 +459,7 @@ impl Values {
                 values.get_unknowns_helper(set)?;
                 Some(())
             },
-            Values::Possibilities(div_unknowns, others ) => {
+            Values::Possibilities(_div_unknowns, _others ) => {
                 todo!()
             }
         }
@@ -540,7 +533,7 @@ impl Values {
             Values::Mod8(values) => Values::Mod8(
                 Box::new(values.apply(vals))
             ).reduce(),
-            Values::Possibilities(vec, hash_map) => todo!(),
+            Values::Possibilities(_vec, _hash_map) => todo!(),
         }
     }
 }
@@ -550,16 +543,6 @@ struct ValueRegisters {
     a: Values,
     b: Values,
     c: Values,
-}
-
-fn get_num_bits(num: u128) -> u128 {
-    let mut count = 0;
-    let mut num = num;
-    while num != 0 {
-        count += 1;
-        num /= 2;
-    }  
-    count
 }
 
 fn part2(program: &Vec<u128>) -> BigUint {
@@ -755,9 +738,7 @@ fn part2(program: &Vec<u128>) -> BigUint {
             return false;
         }
         for i in 0..outs.len() {
-            if outs.len() != program.len() {
-                return false;
-            }
+            assert!(outs[i] == program[i]);
         }
         true
     }).min().unwrap()
