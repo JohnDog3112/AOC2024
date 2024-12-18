@@ -1,4 +1,4 @@
-use std::{collections::{HashMap, HashSet}, ops::{Shl, Shr}};
+use std::{collections::{HashMap, HashSet}, ops::{Shl, Shr}, str::FromStr};
 use num_bigint::{BigUint, ToBigUint};
 
 #[derive(Clone, Debug)]
@@ -342,7 +342,9 @@ impl Values {
                         Values::AParts(parts),
                         Values::Possibilities(unknowns, poss)
                     ) => {
-                        Values::Possibilities(
+                        // println!("before: {:#?}", Values::Xor(Box::new(Values::AParts(parts.clone())), Box::new(Values::Possibilities(unknowns.clone(), poss.clone()))));
+
+                        let after = Values::Possibilities(
                             unknowns.clone(), 
                             HashMap::from_iter(
                                 poss.into_iter().map(|(val, values)| {
@@ -363,7 +365,9 @@ impl Values {
                                     )
                                 })
                             )
-                        )
+                        );
+                        // println!("after: {:?}", after);
+                        after
                     }
                     
                     (values, values1) => Values::Xor(
@@ -381,7 +385,7 @@ impl Values {
                         if let APart::Range(start, end) = parts[0] {
                             Values::AParts(vec![APart::Range(
                                 start,
-                                (start+7).min(end)
+                                (start+2).min(end)
                             )]).reduce()
                         } else { 
                             unreachable!()
@@ -395,7 +399,7 @@ impl Values {
                                 let mut n_parts = vec![];
                                 let mut counter = 0;
                                 if let Values::AParts(parts) = values {
-                                    while counter < parts.len() && counter < 8 {
+                                    while counter < parts.len() && counter < 3 {
                                         match parts[counter] {
                                             APart::A(_)
                                             |APart::Not(_)
@@ -405,8 +409,8 @@ impl Values {
                                             }
                                             APart::Range(start, end) => {
                                                 assert!(counter == parts.len()-1);
-                                                assert!(end-start+1 >= 8-counter);
-                                                for i in 0..(8-counter) {
+                                                assert!(end-start+1 >= 3-counter);
+                                                for i in 0..(3-counter) {
                                                     n_parts.push(APart::A(start+i));
                                                 }
                                                 break;
@@ -558,108 +562,7 @@ fn get_num_bits(num: u128) -> u128 {
     count
 }
 
-fn part2(program: &Vec<u128>) {
-    // let mut counter = 0;
-    // let mut prev_counter;
-    // let mut map: Vec<HashSet<u128>> = vec![HashSet::new(); program.len()];
-
-    // let mut max_left: Vec<u128> = vec![0; program.len()];
-
-    // let mut locked_vec = vec![];
-    // let mut locked = 0;
-    // let mut iter_part = 0;
-    // let mut second_counter: u128 = 0;
-
-    // let mut max_found = 0;
-    // let mut max_bits = 0;
-    // loop {
-    //     let registers = Registers {
-    //         a: counter,
-    //         b: 0,
-    //         c: 0
-    //     };
-    //     let bit_num = get_num_bits(counter);
-    //     if bit_num > max_bits {
-    //         println!("bits: {bit_num}, {}", max_left[locked]);
-    //         max_bits = bit_num;
-    //     }
-    //     prev_counter = counter;
-    //     if max_left[locked]+10 <= get_num_bits(counter) {
-    //         locked_vec = map[locked].clone().into_iter().collect::<Vec<u128>>();
-    //         locked += 1;
-    //         iter_part = 0;
-    //         second_counter = 0;
-
-    //         max_bits = 0;
-    //         // println!("locked: {locked}, {:?}", locked_vec);
-    //     }
-    //     if locked == 0 {
-    //         counter += 1;
-    //     } else {
-    //         counter = locked_vec[iter_part] + second_counter.shl(get_num_bits(locked_vec[iter_part]));
-    //         iter_part += 1;
-    //         if iter_part >= locked_vec.len() {
-    //             iter_part = 0;
-    //             second_counter += 1;
-    //         }
-    //         // println!("{counter:#0128b}");
-    //     }
-    //     // counter += 1;
-
-
-    //     let out = part1(registers, program);
-
-    //     let mut num_right = 0;
-    //     for i in 0..program.len() {
-    //         match out.get(i) {
-    //             Some(&val) => {
-    //                 if val == program[i] {
-    //                     num_right += 1;
-    //                 } else {
-    //                     break;
-    //                 }
-    //             },
-    //             None => break,
-    //         }
-    //     }
-    //     let num_right = num_right;
-
-    //     let mut val = prev_counter;
-    //     let mut prev_val = val;
-    //     for num_right in ((locked+1)..=num_right).rev() {
-    //         'this: loop {
-    //             let out = part1(Registers { a: val, b: 0, c: 0}, program);
-    //             for i in 0..num_right {
-    //                 match out.get(i as usize) {
-    //                     Some(&val) => {
-    //                         if val != program[i as usize] {
-    //                             break 'this;
-    //                         }
-    //                     },
-    //                     None => break 'this,
-    //                 }
-    //             } 
-    //             prev_val = val;
-    //             let min_bits = get_num_bits(val);
-    //             val &= !(1u128.shl(min_bits - 1));
-    //         }
-    //         map[num_right as usize - 1].insert(prev_val);
-    //         max_left[num_right as usize - 1] = max_left[num_right as usize - 1].max(get_num_bits(prev_val));
-    //     }
-
-    //     if num_right > max_found {
-    //         println!("{num_right}, {locked}");
-    //         max_found = num_right;
-    //     }
-    //     if num_right >= 16 {
-    //         break;
-    //     }
-    // }
-    // println!("{:#?}", map);
-    // println!("{:#?}", max_left);
-    // println!("{locked}");
-    // println!("{:#032b}", prev_counter);
-    // println!("{:?}", part1(Registers { a: prev_counter, b: 0, c: 0}, program));
+fn part2(program: &Vec<u128>) -> BigUint {
     let mut registers = ValueRegisters {
         a: Values::A,
         b: Values::Literal(0),
@@ -737,32 +640,19 @@ fn part2(program: &Vec<u128>) {
         }
     }
 
-    // out.into_iter().zip(program).for_each(|(out,prog)| {
-    //     let out = out.reduce();
-    //     println!("{prog}: {:#?}", out);
-    // });
+    // let mut out_count = 0;
     let outs: Vec<Vec<HashMap<usize, u8>>> = out.into_iter().zip(program).map(|(out, prog)| {
+        // out_count += 1;
         let out = out.reduce();
-        println!("{prog}: {:#?}", out);
+        // println!("new point ===============");
+        // println!("{prog}: {:#?}", out);
         let (unknowns, poss) = if let Values::Possibilities(unknowns, poss) = out {
             (unknowns, poss)
         } else {
             unreachable!()
         };
 
-        // let poss: HashMap<usize, Vec<APart>> = HashMap::from_iter(poss.into_iter().map(|(val, values)| {
-        //     if let Values::AParts(parts) = values {
-        //         (val, parts)
-        //     } else {
-        //         unreachable!()
-        //     }
-        // }));
         let poss: HashMap<usize, Values> = HashMap::from_iter(poss.into_iter().map(|(val, values)| {
-            // if let Values::AParts(parts) = values {
-            //     (val, parts)
-            // } else {
-            //     unreachable!()
-            // }
             (val, match values {
                 Values::Literal(_)
                 | Values::AParts(_) => values,
@@ -781,7 +671,7 @@ fn part2(program: &Vec<u128>) {
                 lit /= 2;
             }
 
-            match values {
+            match values.clone() {
                 Values::AParts(parts) => {
                     let mut prog = *prog;
                     for val in parts {
@@ -812,48 +702,14 @@ fn part2(program: &Vec<u128>) {
                     }
                 },
                 _ => unreachable!()
-            }
-            
-            
+            }    
+
             Some(vals)
         }).collect()
-        
+     
     }).collect();
-    outs.clone().into_iter().enumerate().for_each(|(out, vals)| {
-        vals.into_iter().for_each(|a| {
-            let val = a.iter().fold(BigUint::ZERO, |acc, (&i, &val)| {
-                if val == 0 {
-                    let mask = 1.to_biguint().unwrap().shl(i);
-                    if acc.clone()&mask.clone() != BigUint::ZERO {
-                        acc ^ mask
-                    } else {
-                        acc
-                    }
-                } else {
-                    acc | 1.to_biguint().unwrap().shl(i)
-                }
-            });
-
-            let outs = part1(Registers { a: val.to_biguint().unwrap(), b: BigUint::ZERO, c: BigUint::ZERO}, program);
-            // if outs.len() <= out {
-            //     println!("Failed: {out}, {outs:?}");
-            // } else {
-            //     println!("{out}, {outs:?}");
-            //     println!("{:?}, {}", program[out], outs[out]);
-            //     // assert!(program[out] == outs[out]);
-            //     program[out] == outs[out]
-            // }
-            if outs.len() <= out || program[out] != outs[out] {
-                println!("failed: {out}, {outs:?}");
-                println!("{a:#?}");
-                assert!(false);
-            }            
-        });
-    });
 
     let outs = outs.into_iter().reduce(|acc, next| {
-        // println!("==============\n{acc:#?}\n----------\n{next:#?}");
-        println!("step!!!, {}", acc.len());
         acc.iter().flat_map(|item1| {
             next.iter().filter_map(|item2| {
                 let mut r_hash = HashMap::new();
@@ -879,13 +735,38 @@ fn part2(program: &Vec<u128>) {
             }).collect::<Vec<HashMap<usize, u8>>>()
         }).collect()
     }).unwrap();
-    println!("outs: {outs:#?}");
+
+    outs.into_iter().map(|out| {
+        out.iter().fold(BigUint::ZERO, |acc, (&i, &val)| {
+            if val == 0 {
+                let mask = 1.to_biguint().unwrap().shl(i);
+                if acc.clone()&mask.clone() != BigUint::ZERO {
+                    acc ^ mask
+                } else {
+                    acc
+                }
+            } else {
+                acc | 1.to_biguint().unwrap().shl(i)
+            }
+        })
+    }).filter(|val| {
+        let outs = part1(Registers { a: val.to_biguint().unwrap(), b: BigUint::ZERO, c: BigUint::ZERO}, program);
+        if outs.len() != program.len() {
+            return false;
+        }
+        for i in 0..outs.len() {
+            if outs.len() != program.len() {
+                return false;
+            }
+        }
+        true
+    }).min().unwrap()
 }
 
 fn main() {
     let (registers, program) = parse_input();
     println!("part1: {}", part1(registers, &program).into_iter().map(|val| val.to_string()).collect::<Vec<String>>().join(","));
-    part2(&program);
+    println!("part2: {}", part2(&program));
 
 }
 
@@ -895,12 +776,12 @@ fn parse_input() -> (Registers, Vec<u128>) {
     let parts: Vec<&str> = inp.split("\n\n").collect();
 
     let registers = parts[0].split("\n").map(|line| {
-        line.split(": ").skip(1).next().unwrap().parse::<u128>().unwrap()
-    }).collect::<Vec<u128>>();
+        BigUint::from_str(line.split(": ").skip(1).next().unwrap()).unwrap()
+    }).collect::<Vec<BigUint>>();
     let registers = Registers {
-        a: registers[0].to_biguint().unwrap(),
-        b: registers[1].to_biguint().unwrap(),
-        c: registers[2].to_biguint().unwrap()
+        a: registers[0].clone(),
+        b: registers[1].clone(),
+        c: registers[2].clone(),
     };
 
 
