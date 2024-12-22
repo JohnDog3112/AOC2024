@@ -24,3 +24,4 @@ Current plan is to do it in Factor, Haskell, and Rust, but it might change later
 * Day19: Rust
 * Day20: Rust
 * Day21: You guess it, Rust
+* Day22: Rust
